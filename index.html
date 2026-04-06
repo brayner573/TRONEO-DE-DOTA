@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Torneo Dota 2</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background: #111827;
+}
+
+section {
+    padding: 30px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+input {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    width: 100%;
+}
+
+button {
+    background: #22c55e;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.team {
+    background: #334155;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🔥 Torneo de Dota 2 🔥</h1>
+</header>
+
+<section>
+    <div class="card">
+        <h2>📩 Registrar Equipo</h2>
+
+        <input type="text" id="teamName" placeholder="Nombre del equipo">
+        <input type="text" id="captain" placeholder="Capitán">
+        <input type="text" id="whatsapp" placeholder="WhatsApp (ej: 51999999999)">
+
+        <button onclick="registrarEquipo()">Registrar</button>
+    </div>
+
+    <div class="card">
+        <h2>👥 Equipos Registrados</h2>
+        <div id="listaEquipos"></div>
+    </div>
+</section>
+
+<script>
+let equipos = JSON.parse(localStorage.getItem("equipos")) || [];
+
+function guardar() {
+    localStorage.setItem("equipos", JSON.stringify(equipos));
+}
+
+function registrarEquipo() {
+    let nombre = document.getElementById("teamName").value;
+    let capitan = document.getElementById("captain").value;
+    let whatsapp = document.getElementById("whatsapp").value;
+
+    if(nombre === "" || capitan === "" || whatsapp === ""){
+        alert("Completa todos los campos");
+        return;
+    }
+
+    let equipo = {
+        nombre,
+        capitan,
+        whatsapp
+    };
+
+    equipos.push(equipo);
+    guardar();
+    mostrarEquipos();
+
+    enviarWhatsApp(equipo);
+
+    document.getElementById("teamName").value = "";
+    document.getElementById("captain").value = "";
+    document.getElementById("whatsapp").value = "";
+}
+
+function mostrarEquipos() {
+    let lista = document.getElementById("listaEquipos");
+    lista.innerHTML = "";
+
+    equipos.forEach((e, index) => {
+        lista.innerHTML += `
+        <div class="team">
+            <b>${e.nombre}</b><br>
+            Capitán: ${e.capitan}<br>
+            WhatsApp: ${e.whatsapp}
+        </div>
+        `;
+    });
+}
+
+function enviarWhatsApp(equipo) {
+    let numeroOrganizador = "519XXXXXXXX"; // ← CAMBIA ESTO
+
+    let mensaje = `Nuevo equipo registrado:%0AEquipo: ${equipo.nombre}%0ACapitán: ${equipo.capitan}%0AWhatsApp: ${equipo.whatsapp}`;
+
+    let url = `https://wa.me/${numeroOrganizador}?text=${mensaje}`;
+    window.open(url, "_blank");
+}
+
+mostrarEquipos();
+</script>
+
+</body>
+</html>
